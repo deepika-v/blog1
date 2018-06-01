@@ -30,15 +30,9 @@ return [
     'grant_types' => [
         'password' => [
             'class' => '\League\OAuth2\Server\Grant\PasswordGrant',
-            'callback' => '\App\OAuth\PasswordVerifier@verify',
+            'callback' => '\App\Http\Controllers\Auth\Verifier@verify',
             'access_token_ttl' => env('OAUTH2_TOKEN_TTL', 36000),
-        ],
-        'refresh_token' => [
-            'class' => '\League\OAuth2\Server\Grant\RefreshTokenGrant',
-            'access_token_ttl' => env('OAUTH2_TOKEN_TTL', 36000),
-            'refresh_token_ttl' => 604800,
         ]
-      
     ],
 
     /*

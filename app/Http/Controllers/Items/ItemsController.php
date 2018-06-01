@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Items\Item;
-
+use Session;
 class ItemsController extends Controller
 {
     public function manageItemAjax()
-    {
-        return view('manage-item-ajax');
+    {   
+
+        $session = Session::get('accessToken');
+        return view('manage-item-ajax')->with($session)->header('Authorization','Bearer');
     }
 
 

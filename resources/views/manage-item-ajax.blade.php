@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Laravel Ajax CRUD Example</title>
+	<title>Blog</title>
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css">
 </head>
@@ -14,11 +14,11 @@
 		<div class="row">
 		    <div class="col-lg-12 margin-tb">					
 		        <div class="pull-left">
-		            <h2>Laravel Ajax CRUD Example</h2>
+		            <h2>Blog</h2>
 		        </div>
 		        <div class="pull-right">
 				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#create-item">
-					  Create Item
+					  Create Post
 				</button>
 		        </div>
 		    </div>
@@ -28,7 +28,7 @@
 		<table class="table table-bordered">
 			<thead>
 			    <tr>
-				<th>Title</th>
+				<th>Name</th>
 				<th>Description</th>
 				<th width="200px">Action</th>
 			    </tr>
@@ -47,14 +47,14 @@
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-		        <h4 class="modal-title" id="myModalLabel">Create Item</h4>
+		        <h4 class="modal-title" id="myModalLabel">Create </h4>
 		      </div>
 		      <div class="modal-body">
 
 
 		      		<form data-toggle="validator" action="{{ route('item-ajax.store') }}" method="POST">
 		      			<div class="form-group">
-							<label class="control-label" for="title">Title:</label>
+							<label class="control-label" for="title">Name</label>
 							<input type="text" name="title" class="form-control" data-error="Please enter title." required />
 							<div class="help-block with-errors"></div>
 						</div>
@@ -79,14 +79,14 @@
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-		        <h4 class="modal-title" id="myModalLabel">Edit Item</h4>
+		        <h4 class="modal-title" id="myModalLabel">Edit Post</h4>
 		      </div>
 		      <div class="modal-body">
 
 
 		      		<form data-toggle="validator" action="/item-ajax/14" method="put">
 		      			<div class="form-group">
-							<label class="control-label" for="title">Title:</label>
+							<label class="control-label" for="title">Name:</label>
 							<input type="text" name="title" class="form-control" data-error="Please enter title." required />
 							<div class="help-block with-errors"></div>
 						</div>

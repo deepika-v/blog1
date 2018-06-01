@@ -4,11 +4,24 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Validator;
+use Authorizer;
+use Response;
+use Auth;
+use Redirect;
+use Session;
+use Hash;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
+use App\Http\Requests;
+use App\Models\OAuth\OAuthClient;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\BaseController;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /*
     |--------------------------------------------------------------------------
@@ -68,54 +81,58 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-    }
-
-     public function getLoginValidationRules()
-    {
-        return [
-            'grant_type'    => 'required',
-            'client_id'     => 'required',
-            'client_secret' => 'required',
-            'username'      => 'required',
-            'password'      => 'required',
-            'scope'         => 'required',
-        ];
-    }
+    }     
+     
 
     public function login(Request $request)
     {
-       $clientData=DB::table('oauth_clients')->where('name', 'api')->first();
-        $userScope=$this->checkUserScope(Input::get('username'));
+        $rules = array (
+                
+                'username' => 'required',
+                'password' => 'required' 
+        );
+        $validator = Validator::make ( Input::all (), $rules );
+        if ($validator->fails ()) {
+            return Redirect::back ()->withErrors ( $validator, 'login' )->withInput ();
+        }
+        else 
+        {
+             $clientData=DB::table('oauth_clients')->where('name', 'api')->first();
+        //$userScope=$this->checkUserScope(Input::get('username'));
         Input::merge([
+                'grant_type'    => "password",
                 'client_id'     => "".$clientData->id,
                 'client_secret' => "".$clientData->secret,
-                'scope'         => $userScope
+                'scope'         => "SuperUser"//$userScope
             ]);
             $credentials = $request->only(['grant_type', 'client_id', 'client_secret', 'username', 'password','scope']);
 
             $credentials["client_id"]="".$clientData->id;
             $credentials["client_secret"]="".$clientData->secret;
-            $validationRules = $this->getLoginValidationRules();
-            $this->validateOrFail($credentials, $validationRules);
+            // $validationRules = $this->getLoginValidationRules();
+            // $this->validateOrFail($credentials, $validationRules);
             try {
                 if (! $accessToken = Authorizer::issueAccessToken()) {
-                    return $this->response->errorUnauthorized();
+                    return Redirect::back ()->withErrors ( $this->response->errorUnauthorized(), 'login' )->withInput (); 
                 }
             }
             catch (\League\OAuth2\Server\Exception\OAuthException $e)
             {
                 throw $e;
-                return $this->response->error('could_not_create_token', 500);
+                return Redirect::back ()->withErrors ('could_not_create_token' , 'login' )->withInput ();
             }
-            $accessToken["groups"][]=$userScope;
+            //$accessToken["groups"][]=$userScope;
             $request->headers->set('Authorization','Bearer '.$accessToken['access_token']);
             Authorizer::validateAccessToken();
             $userId = Authorizer::getResourceOwnerId();
-            $userType=User::find($userId)->id;
-            $accessToken['userable_id']=$userType;
+            //$userType=User::find($userId)->id;
+            //$accessToken['userable_id']=$userType;
             $accessToken['userId']=$userId;
+        }
+      
             
-            return response()->json(compact('accessToken'));
+                return Redirect::to('manage-item-ajax')->with(compact('accessToken'));
+            //return      response()->json();
     }
 
     public function getUserIdByEmail($email)
@@ -164,7 +181,32 @@ class AuthController extends Controller
         {
             return $this->response->error('Error Occurred : '.$ex->getMessage(), 404);
         }
-
-
     }
+
+        public function register(Request $request) {
+        $rules = array (
+                'email' => 'required|unique:users|email',
+                'name' => 'required|unique:users|alpha_num|min:4',
+                'password' => 'required|min:6|confirmed' 
+        );
+        $validator = Validator::make ( Input::all (), $rules );
+        if ($validator->fails ()) {
+            return Redirect::back ()->withErrors ( $validator, 'register' )->withInput ();
+        } else {
+            $user = new User ();
+            $user->name = $request->get ( 'name' );
+            $user->email = $request->get ( 'email' );
+            $user->password = Hash::make ( $request->get ( 'password' ) );
+            $user->remember_token = $request->get ( '_token' );
+            
+            $user->save ();
+            return Redirect::back ();
+        }
+    }
+    public function logout() {
+        Session::flush ();
+        Auth::logout ();
+        return Redirect::back ();
+    }
+
 }

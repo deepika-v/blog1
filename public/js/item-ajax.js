@@ -40,7 +40,9 @@ function manageData() {
 
 $.ajaxSetup({
     headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Authorisation: Bearer'
+
         }
 });
 
@@ -57,7 +59,7 @@ function getPageData() {
 }
 
 
-/* Add new Item table row */
+/* Add new Post table row */
 function manageRow(data) {
 	var	rows = '';
 	$.each( data, function( key, value ) {
@@ -76,7 +78,7 @@ function manageRow(data) {
 }
 
 
-/* Create new Item */
+/* Create new Post */
 $(".crud-submit").click(function(e){
     e.preventDefault();
     var form_action = $("#create-item").find("form").attr("action");
