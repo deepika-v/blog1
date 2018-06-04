@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\Users\UserRole;
+use App\Models\Users\UserRole;
 
 class UserRoleSeeder extends Seeder
 {
@@ -10,12 +10,31 @@ class UserRoleSeeder extends Seeder
      *
      * @return void
      */
+    public $roles=[
+        [
+            "UserRole"=>"SuperUser",
+        ],
+        [
+            "UserRole"=>"User",
+        ]
+        
+    ];
+
     public function run()
     {
-        UserRole::create(
-        	['user_role'     => 'SuperUser'],
-	        ['user_role'	    =>  'User']
-	         
-	    ));
+
+        foreach($this->roles as $role){
+            $userroles= UserRole::where('user_role','=',$role['UserRole'])->get();
+            $count= count($userroles);
+            if($count == 0)
+            {
+                $now = date('Y-m-d H:i:s');
+                $name=UserRole::create([
+                    "user_role"=>$role["UserRole"],
+                    'created_at' => $now,
+                    'updated_at' => $now
+                ]);
+            }
+        }
     }
 }

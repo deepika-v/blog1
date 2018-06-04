@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>justLaravel - Custom Authentication in Laravel</title>
+<title>Task Management</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -92,20 +92,33 @@
                         </div>
                         @endif
                         <form action="{{ asset('register') }}" method="POST" id="regForm">
-                            {{ csrf_field() }} <input type="hidden" name="redirurl"
-                                value="{{ $_SERVER['REQUEST_URI'] }}"> <label><b>Email</b></label>
+                            {{ csrf_field() }}
+                             <input type="hidden" name="redirurl"
+                                value="{{ $_SERVER['REQUEST_URI'] }}"> 
+                            <label><b>Email</b></label>
                             <input class="w3-input w3-border w3-margin-bottom" type="text"
                                 name="email" placeholder="Enter Email"
-                                value="{{ old('email') }}" required> <label><b>Name</b></label>
+                                value="{{ old('email') }}" required>
+                            <label><b>User Type</b></label>
+                            <select class="w3-input w3-border w3-margin-bottom" name="user_role_id" >
+                            @foreach($userrole as $user_role)
+                            <OPTION value = '{{$user_role->id}}'>{{$user_role->user_role}}</OPTION>
+                            @endforeach
+                            </select>   
+                            <label><b>Name</b></label>
                             <input class="w3-input w3-border w3-margin-bottom" type="text"
                                 name="name" placeholder="Enter Name" required
-                                value="{{ old('name') }}"> <label><b>Password</b></label> <input
+                                value="{{ old('name') }}"> 
+                            <label><b>Password</b></label> 
+                            <input
                                 class="w3-input w3-border w3-margin-bottom" type="password"
-                                name="password" required placeholder="Enter Password"> <label><b>Confirm
-                                    Password</b></label> <input
+                                name="password" required placeholder="Enter Password"> 
+                            <label><b>Confirm Password</b> </label> 
+                            <input
                                 class="w3-input w3-border w3-margin-bottom" required
                                 type="password" name="password_confirmation"
                                 placeholder="Enter Password">
+
                             <button type="submit" class="w3-btn w3-btn-block w3-green">SignUp</button>
                         </form>
                     </div>

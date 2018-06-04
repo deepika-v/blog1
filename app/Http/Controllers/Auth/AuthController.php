@@ -72,7 +72,7 @@ class AuthController extends BaseController
     public function index()
     {
          $user_role = UserRole::all();
-        return view('manage-item-ajax')->with($$user_role;
+         return view('welcome')->with('userrole',$user_role);
     }
 
     /**
@@ -136,9 +136,15 @@ class AuthController extends BaseController
             //$accessToken['userable_id']=$userType;
             $accessToken['userId']=$userId;
         }
-      
-            
-                return Redirect::to('manage-item-ajax')->with(compact('accessToken'));
+        //$data = "";
+        //$accesstoken = 
+            //return $accessToken;   
+           // return response()->json(compact('accessToken'));
+            // return response()
+            // ->view('manage-item-ajax', $accessToken, 200)
+            // ->header('Authorization','Bearer '.$accessToken['access_token']);
+              return response()->redirectToRoute(asset('manage-item-ajax'), $status = 200, $headers = ['Authorization','Bearer '.$accessToken['access_token']]);
+            //return Redirect::to('manage-item-ajax')->with(compact('accessToken'));
             //return      response()->json();
     }
 
@@ -201,18 +207,19 @@ class AuthController extends BaseController
         if ($validator->fails ()) {
             return Redirect::back ()->withErrors ( $validator, 'register' )->withInput ();
         } else {
-            if(!empty($request->get ( 'user_role_id'))
+            
             $user = new User ();
             $user->name = $request->get ( 'name' );
             $user->email = $request->get ( 'email' );
-            $user->user_role_id = $user_role_id;
+            $user->user_role_id = $request->get ( 'user_role_id' );
             $user->password = Hash::make ( $request->get ( 'password' ) );            
             
             $user->save ();
             return Redirect::back ();
         }
     }
-    public function logout() {
+    public function logout() 
+    {
         Session::flush ();
         Auth::logout ();
         return Redirect::back ();

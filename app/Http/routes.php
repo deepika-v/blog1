@@ -11,16 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
-//Route::post ( '/login', 'MainController@login' );
+Route::get('/', 'Auth\AuthController@index');
 Route::post ( 'register', 'Auth\AuthController@register' );
-Route::get ( '/logout', 'MainController@logout' );
-
 Route::post('login','Auth\AuthController@login');
+
+
+Route::group(array('middleware' => ['oauth']), function()
+{
+Route::get ( '/logout', 'MainController@logout' );
 Route::get('manage-item-ajax', 'Items\ItemsController@manageItemAjax');
 Route::resource('item-ajax', 'Items\ItemsController');
+});
 
