@@ -26,10 +26,8 @@ class OauthClientSeeder extends Seeder
                     ],
                     [
                         "name"=>'User',
-                    ],
-                    [
-                        "name"=>'Guest',
                     ]
+                    
                     
                 ]
             ]

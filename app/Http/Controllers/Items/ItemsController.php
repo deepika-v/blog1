@@ -14,7 +14,7 @@ class ItemsController extends Controller
     {   
 
         $session = Session::get('accessToken');
-        return view('manage-item-ajax')->with($session)->header('Authorization','Bearer');
+        return view('manage-item-ajax')->with($session);
     }
 
 

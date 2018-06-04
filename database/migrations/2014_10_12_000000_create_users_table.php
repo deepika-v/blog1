@@ -17,9 +17,12 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->unsignedInteger('user_role_id')->default('nullable');
             $table->rememberToken();
             $table->timestamps();
         });
+         $statement = "ALTER TABLE users AUTO_INCREMENT = 100001";
+         DB::unprepared($statement);
     }
 
     /**

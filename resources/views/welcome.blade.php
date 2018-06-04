@@ -96,9 +96,9 @@
                                 value="{{ $_SERVER['REQUEST_URI'] }}"> <label><b>Email</b></label>
                             <input class="w3-input w3-border w3-margin-bottom" type="text"
                                 name="email" placeholder="Enter Email"
-                                value="{{ old('email') }}" required> <label><b>Username</b></label>
+                                value="{{ old('email') }}" required> <label><b>Name</b></label>
                             <input class="w3-input w3-border w3-margin-bottom" type="text"
-                                name="name" placeholder="Enter username" required
+                                name="name" placeholder="Enter Name" required
                                 value="{{ old('name') }}"> <label><b>Password</b></label> <input
                                 class="w3-input w3-border w3-margin-bottom" type="password"
                                 name="password" required placeholder="Enter Password"> <label><b>Confirm

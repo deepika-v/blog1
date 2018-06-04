@@ -20,6 +20,7 @@ use App\Models\OAuth\OAuthClient;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\BaseController;
+use App\Models\Users\UserRole;
 
 class AuthController extends BaseController
 {
@@ -41,7 +42,7 @@ class AuthController extends BaseController
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/manage-item-ajax';
 
     /**
      * Create a new authentication controller instance.
@@ -66,6 +67,12 @@ class AuthController extends BaseController
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
+    }
+
+    public function index()
+    {
+         $user_role = UserRole::all();
+        return view('manage-item-ajax')->with($$user_role;
     }
 
     /**
@@ -187,17 +194,19 @@ class AuthController extends BaseController
         $rules = array (
                 'email' => 'required|unique:users|email',
                 'name' => 'required|unique:users|alpha_num|min:4',
-                'password' => 'required|min:6|confirmed' 
+                'password' => 'required|min:6|confirmed',
+                'user_role_id' =>'required|exists:user_roles,id' 
         );
         $validator = Validator::make ( Input::all (), $rules );
         if ($validator->fails ()) {
             return Redirect::back ()->withErrors ( $validator, 'register' )->withInput ();
         } else {
+            if(!empty($request->get ( 'user_role_id'))
             $user = new User ();
             $user->name = $request->get ( 'name' );
             $user->email = $request->get ( 'email' );
-            $user->password = Hash::make ( $request->get ( 'password' ) );
-            $user->remember_token = $request->get ( '_token' );
+            $user->user_role_id = $user_role_id;
+            $user->password = Hash::make ( $request->get ( 'password' ) );            
             
             $user->save ();
             return Redirect::back ();
