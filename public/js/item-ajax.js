@@ -41,7 +41,8 @@ function manageData() {
 $.ajaxSetup({
     headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Authorisation: Bearer'
+              'Authorization':'Bearer '+ window.sessionStorage.getItem('authtoken'),
+            
 
         }
 });
@@ -86,6 +87,13 @@ $(".crud-submit").click(function(e){
 
  
     var description = $("#create-item").find("textarea[name='description']").val();
+     //alert(window.sessionStorage.getItem('authtoken'));
+     //console.log(window.sessionStorage.getItem('authtoken'));
+           $.ajaxSetup({
+    headers: {
+             'Authorization':'Bearer '+ window.sessionStorage.getItem('authtoken'),
+        }
+});
 
 
     $.ajax({

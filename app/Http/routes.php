@@ -13,13 +13,13 @@
 
 Route::get('/', 'Auth\AuthController@index');
 Route::post ( 'register', 'Auth\AuthController@register' );
-Route::post('login','Auth\AuthController@login');
+Route::post('login','Auth\AuthController@login')->name('login');
 
 
 Route::group(array('middleware' => ['oauth']), function()
 {
-Route::get ( '/logout', 'MainController@logout' );
-Route::get('manage-item-ajax', 'Items\ItemsController@manageItemAjax');
+//Route::get ( '/logout', 'MainController@logout' );
+Route::get('manage-item-ajax', 'Items\ItemsController@manageItemAjax')->name('item.view');
 Route::resource('item-ajax', 'Items\ItemsController');
 });
 

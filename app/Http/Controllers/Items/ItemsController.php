@@ -13,8 +13,9 @@ class ItemsController extends Controller
     public function manageItemAjax()
     {   
 
-        $session = Session::get('accessToken');
-        return view('manage-item-ajax')->with($session);
+        $session_accesstoken = Session::get('accessToken');
+       return view('manage-item-ajax')->with($session_accesstoken);
+          // return redirect(asset('manage-item-ajax'), $status = 301, $headers = ['Authorization','Bearer '.$session_accesstoken['access_token']]);
     }
 
 

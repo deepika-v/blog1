@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Blog</title>
-	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css">
-</head>
-<body>
-
-
-	<div class="container">
+<div class="container">
 
 
 		<div class="row">
@@ -55,7 +45,7 @@
 		      		<form data-toggle="validator" action="{{ route('item-ajax.store') }}" method="POST">
 		      			<div class="form-group">
 							<label class="control-label" for="title">Name</label>
-							<input type="text" name="title" class="form-control" data-error="Please enter title." required />
+							<input type="text" name="title" class="form-control" data-error="Please enter Task Name." required />
 							<div class="help-block with-errors"></div>
 						</div>
 						<div class="form-group">
@@ -79,7 +69,7 @@
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-		        <h4 class="modal-title" id="myModalLabel">Edit Post</h4>
+		        <h4 class="modal-title" id="myModalLabel">Edit Task</h4>
 		      </div>
 		      <div class="modal-body">
 
@@ -87,12 +77,12 @@
 		      		<form data-toggle="validator" action="/item-ajax/14" method="put">
 		      			<div class="form-group">
 							<label class="control-label" for="title">Name:</label>
-							<input type="text" name="title" class="form-control" data-error="Please enter title." required />
+							<input type="text" name="title" class="form-control" data-error="Please enter Task Name ." required />
 							<div class="help-block with-errors"></div>
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="title">Description:</label>
-							<textarea name="description" class="form-control" data-error="Please enter description." required></textarea>
+							<textarea name="description" class="form-control" data-error="Please enter Description." required></textarea>
 							<div class="help-block with-errors"></div>
 						</div>
 						<div class="form-group">

@@ -105,19 +105,17 @@ class AuthController extends BaseController
         else 
         {
              $clientData=DB::table('oauth_clients')->where('name', 'api')->first();
-        //$userScope=$this->checkUserScope(Input::get('username'));
+        $userScope=$this->checkUserScope(Input::get('username'));
         Input::merge([
                 'grant_type'    => "password",
                 'client_id'     => "".$clientData->id,
                 'client_secret' => "".$clientData->secret,
-                'scope'         => "SuperUser"//$userScope
+                'scope'         => $userScope
             ]);
             $credentials = $request->only(['grant_type', 'client_id', 'client_secret', 'username', 'password','scope']);
 
             $credentials["client_id"]="".$clientData->id;
             $credentials["client_secret"]="".$clientData->secret;
-            // $validationRules = $this->getLoginValidationRules();
-            // $this->validateOrFail($credentials, $validationRules);
             try {
                 if (! $accessToken = Authorizer::issueAccessToken()) {
                     return Redirect::back ()->withErrors ( $this->response->errorUnauthorized(), 'login' )->withInput (); 
@@ -128,7 +126,7 @@ class AuthController extends BaseController
                 throw $e;
                 return Redirect::back ()->withErrors ('could_not_create_token' , 'login' )->withInput ();
             }
-            //$accessToken["groups"][]=$userScope;
+            $accessToken["groups"]=$userScope;
             $request->headers->set('Authorization','Bearer '.$accessToken['access_token']);
             Authorizer::validateAccessToken();
             $userId = Authorizer::getResourceOwnerId();
@@ -139,11 +137,11 @@ class AuthController extends BaseController
         //$data = "";
         //$accesstoken = 
             //return $accessToken;   
-           // return response()->json(compact('accessToken'));
+            return response()->json(compact('accessToken'));
             // return response()
             // ->view('manage-item-ajax', $accessToken, 200)
             // ->header('Authorization','Bearer '.$accessToken['access_token']);
-              return response()->redirectToRoute(asset('manage-item-ajax'), $status = 200, $headers = ['Authorization','Bearer '.$accessToken['access_token']]);
+              // return redirect(asset('manage-item-ajax'), $status = 301, $headers = ['Authorization','Bearer '.$accessToken['access_token']]);
             //return Redirect::to('manage-item-ajax')->with(compact('accessToken'));
             //return      response()->json();
     }
@@ -157,11 +155,11 @@ class AuthController extends BaseController
         }
         catch(ModelNotFoundException $mnfex)
         {
-            return $this->response->error('User Does Not Exists !', 404);
+            return response()->error('User Does Not Exists !', 404);
         }
         catch(\Exception $ex)
         {
-            return $this->response->error('Error Occurred !', 500);
+            return response()->error('Error Occurred !', 500);
         }
     }
 
@@ -169,21 +167,21 @@ class AuthController extends BaseController
     {
         try
         {
-            if((User::where('username', '=', $username)->exists()))
+            if((User::where('email', '=', $username)->exists()))
             {
-               $userId=User::where('username', '=', $username)->pluck('id');
+               $userId=User::where('email', '=', $username)->pluck('id');
 //                $user=User::find($userId);
 //                $groups=$user->groups;
 //
 //                return $groups[0]->name;
                 $user=DB::table('users')
-                    ->select('UserRole')
-                    ->join('user_role','user_role.UserRoleID','=','users.UserRoleID')
+                    ->select('user_role')
+                    ->join('user_roles','user_roles.id','=','users.user_role_id')
                     ->where('users.id','=',$userId)
                     ->get();
 
                 //dd($user);
-                return $user[0]->UserRole;
+                return $user[0]->user_role;
             }
             else
             {
@@ -192,7 +190,7 @@ class AuthController extends BaseController
         }
         catch(\Exception $ex)
         {
-            return $this->response->error('Error Occurred : '.$ex->getMessage(), 404);
+            return response()->error('Error Occurred : '.$ex->getMessage(), 404);
         }
     }
 

@@ -13,6 +13,9 @@
     src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script
     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css">
 </head>
 <body>
     <ul class="w3-navbar w3-light-grey w3-border">
@@ -23,6 +26,7 @@
         <li class="w3-right"><a class="w3-green" href="#" id="auth"
             onclick="document.getElementById('authentication').style.display='block'">SignIn/SignUp</a></li>@endif
     </ul>
+    <div id="container"></div>
     <div id="authentication" class="w3-modal">
         <span
             onclick="document.getElementById('authentication').style.display='none'"
@@ -42,19 +46,12 @@
                 <div id="Login" class="w3-container form">
                     <div class="w3-container ">
                         <div class="w3-section">
-                            <br> <br>@if (count($errors->login) > 0)
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->login->all() as $error)
-                                    <P>{{ $error }}</p>
-                                    @endforeach
-                                </ul>
+                           <div class="alert alert-danger fade in" id="loginerrmsg" hidden>
+                                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                    <strong>Error!</strong> A problem has been occurred while submitting your data.
                             </div>
-                            @endif 
-                            @if (Session::has('message'))
-                            <div class="alert alert-warning">{{ Session::get('message') }}</div>
-                            @endif
-                            <form action="{{asset('login')}}" method="POST">
+                           
+                            <form action="{{ route('login') }}" method="POST" id="loginform">
                                 {{ csrf_field() }} <input type="hidden" name="redirurl"
                                     value="{{ $_SERVER['REQUEST_URI'] }}"> <label><b>Username</b></label>
                                 <input name="username"
@@ -63,9 +60,7 @@
                                 <input class="w3-input w3-border w3-margin-bottom"
                                     name="password" type="password" placeholder="Enter Password"
                                     required> <input type="submit"
-                                    class="w3-btn w3-btn-block w3-green" value="Login"> <input
-                                    class="w3-check w3-margin-top" type="checkbox"
-                                    checked="checked"> Remember me
+                                    class="w3-btn w3-btn-block w3-green" id="loginbutton" value="Login"> 
                             </form>
                         </div>
                     </div>
@@ -73,7 +68,7 @@
                         <button
                             onclick="document.getElementById('authentication').style.display='none'"
                             type="button" class="w3-btn w3-red">Cancel</button>
-                        <span class="w3-right w3-padding w3-hide-small">Forgot <a href="#">password?</a></span>
+                        
                     </div>
                 </div>
             </div>
@@ -143,6 +138,7 @@ function openForm(formName) {
     document.getElementById(formName).style.display = "block";  
 }
 </script>
+<script src="{{ asset('js/oauth.js') }}"></script> 
 @if (Session::has('message'))
     <script>  $('#auth').click(); </script>
     @endif @if($errors->login->any())
